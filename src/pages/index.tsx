@@ -1,4 +1,5 @@
 import { Container, Grid, Button, Card } from "semantic-ui-react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 
 export const getServerSideProps = async () => {
@@ -13,9 +14,9 @@ export const getServerSideProps = async () => {
 };
 
 const Home = ({ tasks }: { tasks: any }) => {
-  let newTasks: any = [];
+  const router = useRouter();
 
-  if (newTasks.length === 0)
+  if (tasks.length === 0)
     return (
       <Grid
         centered
@@ -46,15 +47,25 @@ const Home = ({ tasks }: { tasks: any }) => {
   return (
     <Container>
       <Card.Group itemsPerRow={4}>
-        {newTasks.map((task: any) => (
+        {tasks.map((task: any) => (
           <Card key={task._id}>
             <Card.Content>
               <Card.Header>{task.title}</Card.Header>
               <p>{task.description}</p>
             </Card.Content>
             <Card.Content extra>
-              <Button primary>View</Button>
-              <Button secondary>Edit</Button>
+              <Button
+                primary
+                onClick={() => router.push(`/task/${task._id}`)}
+              >
+                View
+              </Button>
+              <Button
+                secondary
+                onClick={() => router.push(`/task/${task._id}/edit`)}
+              >
+                Edit
+              </Button>
             </Card.Content>
           </Card>
         ))}
