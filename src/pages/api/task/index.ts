@@ -8,10 +8,29 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) => {
-  const task = await Task.find();
-  console.log(task);
+  const { method, body } = req;
 
-  return res.status(405).end();
+  switch (method) {
+    case "GET":
+      try {
+        const task = await Task.find();
+        return res.status(200).json(task);
+      } catch (error) {
+        res.status(400).json({ msg: error });
+      }
+
+    case "POST":
+      try {
+        const newTask = await new Task(body);
+        const savedTask = await newTask.save();
+        return res.status(200).json(savedTask);
+      } catch (error) {
+        res.status(400).json({ msg: error });
+      }
+
+    default:
+      return res.status(400).json({ msg: "Invalid method" });
+  }
 };
 
 export default handler;
